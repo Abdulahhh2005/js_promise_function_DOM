@@ -1,16 +1,37 @@
-'use strict';
-
+/* eslint-disable max-len */
 'use strict';
 
 // Чекаємо подію на елементі і повертаємо проміс
+// function waitFor(element, eventName) {
+//   return new Promise((resolve) => {
+//     const handler = () => {
+//       resolve(
+//         `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
+//       );
+//       // Відписуємось після першого виклику
+//       element.removeEventListener(eventName, handler);
+//     };
+
+//     element.addEventListener(eventName, handler);
+//   });
+// }
+
 function waitFor(element, eventName) {
   return new Promise((resolve) => {
-    const handler = () => {
-      resolve(
-        `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
-      );
-      // Відписуємось після першого виклику
-      element.removeEventListener(eventName, handler);
+    const handler = (ev) => {
+      // Якщо подія contextmenu, забороняємо стандартне меню
+      if (eventName === 'contextmenu') {
+        ev.preventDefault();
+      }
+
+      // Переконуємось, що подія відбувається на потрібному елементі
+      if (ev.target === element) {
+        resolve(
+          `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
+        );
+        // видаляємо слухача після першого спрацьовування
+        element.removeEventListener(eventName, handler);
+      }
     };
 
     element.addEventListener(eventName, handler);
