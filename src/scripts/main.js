@@ -1,12 +1,30 @@
 'use strict';
 
+'use strict';
+
+// Чекаємо подію на елементі і повертаємо проміс
 function waitFor(element, eventName) {
-  // write your code here
+  return new Promise((resolve) => {
+    const handler = () => {
+      resolve(
+        `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
+      );
+      // Відписуємось після першого виклику
+      element.removeEventListener(eventName, handler);
+    };
+
+    element.addEventListener(eventName, handler);
+  });
 }
 
-const printMessage = (message) => {
-  // write your code here
-};
+// Додаємо повідомлення в DOM
+function printMessage(message) {
+  const div = document.createElement('div');
+
+  div.className = 'message';
+  div.textContent = message;
+  document.body.appendChild(div);
+}
 
 const loginField = document.getElementById('login');
 const passwordField = document.getElementById('password');
