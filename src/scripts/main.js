@@ -19,17 +19,15 @@
 function waitFor(element, eventName) {
   return new Promise((resolve) => {
     const handler = (ev) => {
-      // Якщо подія contextmenu, забороняємо стандартне меню
       if (eventName === 'contextmenu') {
         ev.preventDefault();
       }
 
-      // Переконуємось, що подія відбувається на потрібному елементі
-      if (ev.target === element) {
+      // або ev.target === element, якщо дочірні не враховуємо
+      if (ev.currentTarget === element) {
         resolve(
-          `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
+          `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}.`,
         );
-        // видаляємо слухача після першого спрацьовування
         element.removeEventListener(eventName, handler);
       }
     };
@@ -38,7 +36,6 @@ function waitFor(element, eventName) {
   });
 }
 
-// Додаємо повідомлення в DOM
 function printMessage(message) {
   const div = document.createElement('div');
 
@@ -46,6 +43,10 @@ function printMessage(message) {
   div.textContent = message;
   document.body.appendChild(div);
 }
+
+// робимо функції доступними для тестів
+window.waitFor = waitFor;
+window.printMessage = printMessage;
 
 const loginField = document.getElementById('login');
 const passwordField = document.getElementById('password');
