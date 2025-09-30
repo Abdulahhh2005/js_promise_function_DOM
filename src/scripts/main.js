@@ -1,47 +1,56 @@
 /* eslint-disable max-len */
 'use strict';
 
-// Чекаємо подію на елементі і повертаємо проміс
+// Функція, яка повертає проміс, який спрацьовує при певній події на елементі
+function waitFor(element, eventName) {
+  // створюємо новий проміс
+  return new Promise((resolve) => {
+    // функція-обробник події
+    const handler = (ev) => {
+      // якщо подія contextmenu
+      if (eventName === 'contextmenu') {
+        ev.preventDefault(); // забороняємо стандартне меню браузера
+      }
+
+      // Проміс спрацьовує лише один раз завдяки { once: true }
+      resolve(
+        `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}.`,
+      );
+    };
+
+    // Додаємо слухача події на елемент
+    // Опція { once: true } автоматично видаляє слухача після першого виклику
+    element.addEventListener(eventName, handler, { once: true });
+  });
+}
+
 // function waitFor(element, eventName) {
 //   return new Promise((resolve) => {
-//     const handler = () => {
-//       resolve(
-//         `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
-//       );
-//       // Відписуємось після першого виклику
-//       element.removeEventListener(eventName, handler);
+//     const handler = (ev) => {
+//       if (eventName === 'contextmenu') {
+//         ev.preventDefault();
+//       }
+
+//       // або ev.target === element, якщо дочірні не враховуємо
+//       if (ev.currentTarget === element) {
+//         resolve(
+//           `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}.`,
+//         );
+//         element.removeEventListener(eventName, handler);
+//       }
 //     };
 
 //     element.addEventListener(eventName, handler);
 //   });
 // }
 
-function waitFor(element, eventName) {
-  return new Promise((resolve) => {
-    const handler = (ev) => {
-      if (eventName === 'contextmenu') {
-        ev.preventDefault();
-      }
-
-      // або ev.target === element, якщо дочірні не враховуємо
-      if (ev.currentTarget === element) {
-        resolve(
-          `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}.`,
-        );
-        element.removeEventListener(eventName, handler);
-      }
-    };
-
-    element.addEventListener(eventName, handler);
-  });
-}
-
+// Функція, яка додає повідомлення в DOM
 function printMessage(message) {
-  const div = document.createElement('div');
+  const div = document.createElement('div'); // створюємо новий <div>
 
-  div.className = 'message';
-  div.textContent = message;
-  document.body.appendChild(div);
+  div.className = 'message'; // задаємо клас для стилів
+  div.textContent = message; // вставляємо текст повідомлення
+  document.body.appendChild(div); // додаємо <div> в кінець body
 }
 
 // робимо функції доступними для тестів
